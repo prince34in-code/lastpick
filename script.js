@@ -1,102 +1,141 @@
 const animatedElements = document.querySelectorAll('[data-animate]');
 
-const observer = new IntersectionObserver(
-  (entries, obs) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        obs.unobserve(entry.target);
-      }
-    });
-  },
-  {
-    threshold: 0.15,
-  }
-);
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
 
-animatedElements.forEach((el) => observer.observe(el));
+  animatedElements.forEach((el) => observer.observe(el));
+} else {
+  animatedElements.forEach((el) => el.classList.add('visible'));
+}
 
-// Pack selector: switch large product image without reloading
 document.addEventListener('DOMContentLoaded', () => {
-  // Mobile menu toggle: show/hide compact nav when menu button is used
   const menuBtn = document.querySelector('.menu-toggle');
   const primaryNav = document.getElementById('primary-nav');
+
+  const closeMenu = () => {
+    document.body.classList.remove('nav-open');
+    menuBtn?.setAttribute('aria-expanded', 'false');
+    menuBtn?.setAttribute('aria-label', 'Open menu');
+  };
+
   if (menuBtn && primaryNav) {
     menuBtn.addEventListener('click', () => {
-      const open = document.body.classList.toggle('nav-open');
-      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      const isOpen = document.body.classList.toggle('nav-open');
+      menuBtn.setAttribute('aria-expanded', String(isOpen));
+      menuBtn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    });
+
+    primaryNav.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    window.addEventListener('scroll', closeMenu, { passive: true });
+    window.addEventListener('resize', closeMenu);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeMenu();
+      }
     });
   }
+
   const packCards = Array.from(document.querySelectorAll('.pack-card'));
   const productImg = document.querySelector('.image-frame img');
+  const priceEl = document.querySelector('.price');
+
   const packToSrc = {
     '200ml': 'assets/images/products/bottle-200ml.png',
     '6pack': 'assets/images/products/pack-6.png',
-    '12pack': 'assets/images/products/pack-12.png'
+    '12pack': 'assets/images/products/pack-12.png',
   };
 
-  const priceEl = document.querySelector('.price');
-  const basePrice = 40; // ₹40 per 200ml bottle
   const packMultiplier = {
     '200ml': 1,
     '6pack': 6,
-    '12pack': 12
+    '12pack': 12,
   };
 
-  if (!productImg || packCards.length === 0) return;
+  const basePrice = 40;
+  const transitionMs = 220;
 
-  const transitionMs = 240; // matches CSS ~200-300ms
-
-  function setActive(card) {
-    packCards.forEach((c) => {
-      const active = c === card;
-      c.classList.toggle('active', active);
-      c.setAttribute('aria-pressed', active ? 'true' : 'false');
-    });
-    // update price display based on active card
-    if (priceEl && card && card.dataset && card.dataset.pack) {
-      const mult = packMultiplier[card.dataset.pack] || 1;
-      priceEl.textContent = `₹${basePrice * mult}`;
-    }
+  if (!productImg || packCards.length === 0) {
+    return;
   }
 
-  packCards.forEach((card) => {
-    card.addEventListener('click', () => {
-      const pack = card.dataset.pack;
-      const newSrc = packToSrc[pack];
-      if (!newSrc) return;
-
-      // if already active and src already set, do nothing
-      if (card.classList.contains('active') && productImg.getAttribute('src') === newSrc) return;
-
-      setActive(card);
-
-      // fade out, swap src, fade in
-      productImg.style.opacity = '0';
-      setTimeout(() => {
-        productImg.setAttribute('src', newSrc);
-        productImg.style.opacity = '1';
-      }, transitionMs);
+  const updateActivePack = (activeCard) => {
+    packCards.forEach((card) => {
+      const isActive = card === activeCard;
+      card.classList.toggle('active', isActive);
+      card.setAttribute('aria-pressed', String(isActive));
+      card.setAttribute('aria-selected', String(isActive));
+      card.setAttribute('tabindex', isActive ? '0' : '-1');
     });
-    // allow keyboard activation
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        card.click();
+
+    const pack = activeCard?.dataset?.pack;
+    const multiplier = packMultiplier[pack] || 1;
+
+    if (priceEl) {
+      priceEl.textContent = `\u20B9${basePrice * multiplier}`;
+    }
+  };
+
+  const selectPack = (card) => {
+    const pack = card?.dataset?.pack;
+    const newSrc = packToSrc[pack];
+
+    if (!newSrc) {
+      return;
+    }
+
+    updateActivePack(card);
+
+    if (productImg.getAttribute('src') === newSrc) {
+      return;
+    }
+
+    productImg.style.opacity = '0';
+
+    window.setTimeout(() => {
+      productImg.setAttribute('src', newSrc);
+      productImg.style.opacity = '1';
+    }, transitionMs);
+  };
+
+  packCards.forEach((card, index) => {
+    card.setAttribute('aria-selected', card.classList.contains('active') ? 'true' : 'false');
+    card.setAttribute('tabindex', card.classList.contains('active') ? '0' : '-1');
+
+    card.addEventListener('click', () => selectPack(card));
+
+    card.addEventListener('keydown', (event) => {
+      const nextKey = event.key === 'ArrowRight' || event.key === 'ArrowDown';
+      const previousKey = event.key === 'ArrowLeft' || event.key === 'ArrowUp';
+
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectPack(card);
+      }
+
+      if (nextKey || previousKey) {
+        event.preventDefault();
+        const direction = nextKey ? 1 : -1;
+        const nextIndex = (index + direction + packCards.length) % packCards.length;
+        packCards[nextIndex].focus();
+        selectPack(packCards[nextIndex]);
       }
     });
   });
 
-  // Initialize price/image according to default active card (200ml)
-  const defaultCard = packCards.find(c => c.classList.contains('active')) || packCards[0];
-  if (defaultCard) {
-    // ensure price shows correct value
-    const mult = packMultiplier[defaultCard.dataset.pack] || 1;
-    if (priceEl) priceEl.textContent = `₹${basePrice * mult}`;
-    // ensure product image matches active
-    const initialSrc = packToSrc[defaultCard.dataset.pack];
-    if (initialSrc && productImg.getAttribute('src') !== initialSrc) {
-      productImg.setAttribute('src', initialSrc);
-    }
-  }
+  const defaultCard = packCards.find((card) => card.classList.contains('active')) || packCards[0];
+  selectPack(defaultCard);
 });
