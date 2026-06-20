@@ -54,9 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const priceEl = document.querySelector('.price');
 
   const packToSrc = {
-    '200ml': 'assets/images/products/bottle-200ml.png',
-    '6pack': 'assets/images/products/pack-6.png',
-    '12pack': 'assets/images/products/pack-12.png',
+    '200ml': 'assets/images/products/bottle-200ml.webp',
+    '6pack': 'assets/images/products/pack-6.webp',
+    '12pack': 'assets/images/products/pack-12.webp',
   };
 
   const packMultiplier = {
