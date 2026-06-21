@@ -965,7 +965,7 @@ button:focus-visible,
   }
 
   .hero {
-    min-height: 500px;
+    min-height: 430px;
   }
 
   .hero-bg {
@@ -1194,7 +1194,7 @@ button:focus-visible,
 
 @media (max-width: 430px) {
   .hero {
-    min-height: 480px;
+    min-height: 410px;
   }
 
   .hero-bg {
