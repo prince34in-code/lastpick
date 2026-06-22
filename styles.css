@@ -314,10 +314,12 @@ select {
   object-fit: contain;
   padding: clamp(12px, 2vw, 22px);
   transition: opacity 0.24s ease, transform 0.24s ease;
+
+  filter: drop-shadow(0 20px 25px rgba(0,0,0,0.18));
 }
 
 .image-frame img[src$="bottle-200ml.webp"] {
-  transform: scale(1.25);
+  transform: scale(1.15);
 }
 
 .product-copy {
@@ -725,6 +727,7 @@ select {
 
 .contact-item {
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .contact-sep {
@@ -1024,12 +1027,12 @@ button:focus-visible,
   }
 
   .image-frame {
-    min-height: 280px;
+    min-height: 240px;
     border-radius: 20px;
   }
 
   .image-frame img {
-    max-height: 280px;
+    max-height: 240px;
   }
 
   .product-copy {
