@@ -1,0 +1,13 @@
+{
+  "name": "LastPick Coconut Water",
+  "short_name": "LastPick",
+  "description": "Natural Hydration & Electrolyte Refreshment",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f5b3c",
+  "icons": [
+    { "src": "favicon.ico", "sizes": "any", "type": "image/x-icon" },
+    { "src": "favicon.ico", "sizes": "any", "type": "image/x-icon" }
+  ]
+}
