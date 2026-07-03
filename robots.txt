@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://prince34in-code.github.io/lastpick/sitemap.xml
+Sitemap: https://lastpick.co.in/sitemap.xml
