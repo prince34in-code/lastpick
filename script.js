@@ -76,8 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     packCards.forEach((card) => {
       const isActive = card === activeCard;
       card.classList.toggle('active', isActive);
-      card.setAttribute('aria-pressed', String(isActive));
-      card.setAttribute('aria-selected', String(isActive));
+      card.setAttribute('aria-checked', String(isActive));
       card.setAttribute('tabindex', isActive ? '0' : '-1');
     });
 
@@ -112,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   packCards.forEach((card, index) => {
-    card.setAttribute('aria-selected', card.classList.contains('active') ? 'true' : 'false');
     card.setAttribute('tabindex', card.classList.contains('active') ? '0' : '-1');
 
     card.addEventListener('click', () => selectPack(card));
@@ -130,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const direction = nextKey ? 1 : -1;
         const nextIndex = (index + direction + packCards.length) % packCards.length;
+        packCards.forEach((c, i) => c.setAttribute('tabindex', i === nextIndex ? '0' : '-1'));
         packCards[nextIndex].focus();
         selectPack(packCards[nextIndex]);
       }

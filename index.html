@@ -121,17 +121,17 @@
             </div> 
             
             <div class="pack-selector">
-              <h3 class="pack-heading">Available Sizes</h3>
-              <div class="pack-cards" role="tablist" aria-label="Available Sizes">
-                <button class="pack-card active" data-pack="200ml" aria-pressed="true" role="tab" type="button">
+              <h3 class="pack-heading" id="pack-heading">Available Sizes</h3>
+              <div class="pack-cards" role="radiogroup" aria-labelledby="pack-heading">
+                <button class="pack-card active" data-pack="200ml" aria-checked="true" role="radio" type="button">
                   <img src="assets/images/products/bottle-200ml.webp" alt="200ml Bottle" width="96" height="96" loading="lazy" decoding="async" />
                   <span class="pack-label">200ml Bottle</span>
                 </button>
-                <button class="pack-card" data-pack="6pack" aria-pressed="false" role="tab" type="button">
+                <button class="pack-card" data-pack="6pack" aria-checked="false" role="radio" type="button">
                   <img src="assets/images/products/pack-6.webp" alt="6 Pack" width="96" height="96" loading="lazy" decoding="async" />
                   <span class="pack-label">6 Pack</span>
                 </button>
-                <button class="pack-card" data-pack="12pack" aria-pressed="false" role="tab" type="button">
+                <button class="pack-card" data-pack="12pack" aria-checked="false" role="radio" type="button">
                   <img src="assets/images/products/pack-12.webp" alt="12 Pack" width="96" height="96" loading="lazy" decoding="async" />
                   <span class="pack-label">12 Pack</span>
                 </button>
@@ -261,6 +261,6 @@
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
