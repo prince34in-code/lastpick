@@ -1,24 +1,24 @@
-const animatedElements = document.querySelectorAll('[data-animate]');
-
-if ('IntersectionObserver' in window) {
-  const observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          obs.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
-
-  animatedElements.forEach((el) => observer.observe(el));
-} else {
-  animatedElements.forEach((el) => el.classList.add('visible'));
-}
-
 document.addEventListener('DOMContentLoaded', () => {
+  // Intersection Observer for animations
+  const animatedElements = document.querySelectorAll('[data-animate]');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    animatedElements.forEach((el) => observer.observe(el));
+  } else {
+    animatedElements.forEach((el) => el.classList.add('visible'));
+  }
+
+  // Mobile navigation
   const menuBtn = document.querySelector('.menu-toggle');
   const primaryNav = document.getElementById('primary-nav');
 
@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Product pack selector
   const packCards = Array.from(document.querySelectorAll('.pack-card'));
   const productImg = document.querySelector('.image-frame img');
   const priceEl = document.querySelector('.price');
@@ -69,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const transitionMs = 220;
 
   if (!productImg || packCards.length === 0) {
-    return;
+    return; // Exit if essential elements are not on the page
   }
 
   const updateActivePack = (activeCard) => {
@@ -102,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    productImg.style.opacity = '0';
+    productImg.style.opacity = '0'; // Fade out
 
     window.setTimeout(() => {
       productImg.setAttribute('src', newSrc);
