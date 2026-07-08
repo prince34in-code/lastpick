@@ -1,0 +1,143 @@
+/*
+  LastPick - Premium Typography Polish
+  This file contains typography enhancements.
+  Link this in your HTML <head> after the main styles.css.
+*/
+
+/* --- Font Variables --- */
+:root {
+  --font-primary: 'Sora', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+}
+
+/* --- Global & Body --- */
+body {
+  font-family: var(--font-secondary);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-primary);
+}
+
+/* --- Header & Navigation --- */
+.nav-links a {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* --- Hero Section --- */
+.hero-content .eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.hero-content h1 {
+  font-family: var(--font-primary);
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-transform: none; /* Override if any global uppercase is set */
+}
+
+/* --- Section Labels & Headings --- */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4.5px;
+  text-transform: uppercase;
+}
+
+.product-highlight h2,
+.why-section h2,
+.lifestyle-gallery h2 {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* --- Product Section --- */
+.product-heading {
+  font-family: var(--font-primary);
+  font-weight: 800;
+}
+
+.price {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.pack-heading {
+  font-family: var(--font-secondary);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.pack-label {
+  font-weight: 500;
+}
+
+/* --- Buttons --- */
+.button {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: none; /* Ensure buttons are not all-caps unless intended */
+}
+
+/* --- Feature Cards (Why LastPick?) --- */
+.feature-card h3 {
+  font-family: var(--font-secondary);
+  font-weight: 600;
+  font-size: 1.125rem; /* 18px */
+  letter-spacing: 0.2px;
+}
+
+/* --- Lifestyle Gallery --- */
+.gallery-caption p {
+  font-weight: 600;
+  font-size: 1.125rem; /* 18px */
+}
+
+/* --- Footer --- */
+.footer-title {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 1.75rem; /* 28px */
+  letter-spacing: -0.5px;
+}
+
+.footer-copy {
+  font-weight: 500;
+}
+
+.footer-heading {
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.875rem; /* 14px */
+}
+
+.footer-links a,
+.footer-contact .contact-item {
+  font-weight: 500;
+}
+
+/* --- Policy Pages --- */
+.policy-page h1 {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.policy-page h2 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
