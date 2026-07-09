@@ -289,5 +289,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Load footer content last
-  loadComponent('.site-footer', '_footer.html');
+  loadComponent('.site-footer', 'footer.html');
 });
