@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', async () => {
-  // Function to load reusable HTML components
+document.addEventListener('DOMContentLoaded', () => {
+  // --- Component & Asset Loading ---
   const loadComponent = async (selector, filePath) => {
     const element = document.querySelector(selector);
     if (!element) return;
@@ -15,10 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  // Wait for the footer to be loaded before running other scripts
-  await loadComponent('.site-footer', '_footer.html');
-
-  // Intersection Observer for animations
+  // --- Animations ---
   const animatedElements = document.querySelectorAll('[data-animate]');
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(
@@ -37,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     animatedElements.forEach((el) => el.classList.add('visible'));
   }
 
-  // Debounce function
+  // --- Utilities ---
   const debounce = (func, wait) => {
     let timeout;
     return function executedFunction(...args) {
@@ -50,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
   };
 
-  // Mobile navigation
+  // --- Mobile Navigation ---
   const menuBtn = document.querySelector('.menu-toggle');
   const primaryNav = document.getElementById('primary-nav');
 
@@ -81,19 +78,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Active navigation link
+  // --- Active Navigation Link ---
   const navLinks = document.querySelectorAll('.nav-links a');
-  const currentPath = window.location.pathname.split('/').pop();
+  if (navLinks.length > 0) {
+    const currentPath = window.location.pathname.split('/').pop();
 
-  navLinks.forEach(link => {
-    const linkPath = link.getAttribute('href').split('/').pop().split('#')[0];
-    // Check for product.html or if it's an index link on the index page
-    if (currentPath === 'product.html' && linkPath === 'product.html') {
-      link.classList.add('active');
-    } else if ((currentPath === 'index.html' || currentPath === '') && link.getAttribute('href').includes('index.html')) {
-      // A more robust check could be implemented for hash links
-    }
-  });
+    navLinks.forEach(link => {
+      const linkPath = link.getAttribute('href').split('/').pop().split('#')[0];
+      // Check for product.html or if it's an index link on the index page
+      if (currentPath === 'product.html' && linkPath === 'product.html') {
+        link.classList.add('active');
+      } else if ((currentPath === 'index.html' || currentPath === '') && link.getAttribute('href').includes('index.html')) {
+        // A more robust check could be implemented for hash links
+      }
+    });
+  }
 
   // Product pack selector
   // Run product page specific logic only if on product.html
@@ -283,9 +282,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Set current year in footer
+  // --- Footer ---
   const yearSpan = document.getElementById('current-year');
   if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
   }
+
+  // Load footer content last
+  loadComponent('.site-footer', '_footer.html');
 });
