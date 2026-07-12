@@ -101,30 +101,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const productImg = document.querySelector('.image-frame img');
     const priceEl = document.querySelector('.price');
     const quantityInput = document.getElementById('quantity');
-    const quantityBtns = document.querySelectorAll('.quantity-btn');
     const decreaseBtn = document.querySelector('.quantity-btn[data-action="decrease"]');
     const buyNowBtn = document.getElementById('buy-now-btn');
     const packHeading = document.getElementById('pack-heading');
+    const priceSubtitle = document.querySelector('.price-subtitle');
+    const priceNote = document.querySelector('.price-note');
+    const trustBadges = document.querySelector('.trust-badges');
+    const moqBadge = document.querySelector('.moq-badge-premium');
 
-    const packToSrc = {
-      '6pack': 'assets/images/products/pack-6.webp',
-      '12pack': 'assets/images/products/pack-12.webp',
-    };
-
-    const packPrices = {
-      '6pack': 240,
-      '12pack': 480,
+    const packData = {
+      '1pack': {
+        price: 40,
+        src: 'assets/images/products/bottle-200ml.webp',
+        subtitle: 'Per Bottle',
+        note: 'Price Reference',
+        moqText: 'Minimum Order: 6 Bottles (MOQ)',
+        ctaText: 'Shop Now',
+        label: 'Single Bottle',
+        purchasable: true, // Button is enabled but links to product page
+        ctaLink: 'product.html'
+      },
+      '6pack': {
+        price: 240,
+        src: 'assets/images/products/pack-6.webp',
+        subtitle: '₹40 per bottle',
+        note: 'Most Popular',
+        ctaText: 'Buy Now',
+        label: '6 Bottle Pack',
+        purchasable: true,
+        ctaLink: 'https://wa.me/919310997076?text=Hello%20I%20would%20like%20to%20buy%20a%206-pack%20of%20LastPick%20Coconut%20Water'
+      },
+      '12pack': {
+        price: 480,
+        src: 'assets/images/products/pack-12.webp',
+        subtitle: '₹40 per bottle',
+        note: 'Best Value',
+        ctaText: 'Buy Now',
+        label: '12 Bottle Pack',
+        purchasable: true,
+        ctaLink: 'https://wa.me/919310997076?text=Hello%20I%20would%20like%20to%20buy%20a%2012-pack%20of%20LastPick%20Coconut%20Water'
+      }
     };
 
     const MIN_QUANTITY = 1;
     const transitionMs = 300;
 
-    const updatePrice = (pack, quantity) => {
-      const packPrice = packPrices[pack];
-      if (!packPrice) return;
-      const newPrice = packPrice * quantity;
+    const updatePrice = (pack) => {
+      const data = packData[pack];
+      if (!data) return;
       if (priceEl) {
-        priceEl.textContent = `\u20B9${newPrice}`;
+        priceEl.textContent = `\u20B9${data.price}`;
       }
     };
 
@@ -134,6 +160,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateActivePack = (activeCard) => {
       const pack = activeCard?.dataset?.pack;
+      const data = packData[pack];
+      if (!data) return;
+
+      // Hide quantity selector for single bottle view
+      const quantitySelector = document.querySelector('.quantity-selector');
+      if(quantitySelector) quantitySelector.style.display = (pack === '1pack') ? 'none' : 'grid';
+      if(trustBadges) trustBadges.style.display = (pack === '1pack') ? 'none' : 'flex';
 
       // Update cards
       packCards.forEach((card) => {
@@ -143,26 +176,39 @@ document.addEventListener('DOMContentLoaded', () => {
         card.setAttribute('tabindex', isActive ? '0' : '-1');
       });
 
-      quantityInput.value = MIN_QUANTITY; // Reset quantity to 1 on pack change
-      const currentQuantity = parseInt(quantityInput.value, 10);
-      updatePrice(pack, currentQuantity);
+      // Update UI elements based on the selected pack data
+      updatePrice(pack);
 
-      // Show the buy now button
+      // Animate text changes
+      const textElements = [priceEl, priceSubtitle, priceNote, moqBadge];
+      textElements.forEach(el => el && (el.style.opacity = '0'));
+
+      setTimeout(() => {
+        if (priceSubtitle) priceSubtitle.innerHTML = data.subtitle || '';
+        if (priceNote) priceNote.innerHTML = data.note || '';
+        if (data.helperText && priceNote) priceNote.innerHTML += `<br>${data.helperText}`;
+        if (moqBadge) {
+          moqBadge.textContent = data.moqText || '';
+          moqBadge.classList.toggle('visible', !!data.moqText);
+        }
+
+        textElements.forEach(el => el && (el.style.opacity = '1'));
+      }, transitionMs / 2);
+
+      // Update CTA button state and text
       if (buyNowBtn) {
-        buyNowBtn.style.opacity = '1';
-        buyNowBtn.style.pointerEvents = 'auto';
-        buyNowBtn.style.transform = 'translateY(0)';
+        buyNowBtn.textContent = data.ctaText;
+        buyNowBtn.setAttribute('href', data.ctaLink);
       }
 
       // Announce the change for screen readers
       if (packHeading) {
-        packHeading.textContent = `Selected: ${activeCard.textContent.trim()}`;
+        packHeading.textContent = `Selected: ${data.label}`;
       }
     };
 
     const selectPack = (card) => {
-      const pack = card?.dataset?.pack;
-      const newSrc = packToSrc[pack];
+      const newSrc = packData[card?.dataset?.pack]?.src;
 
       if (!newSrc) return;
 
@@ -200,46 +246,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Quantity selector logic
-    quantityBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        let currentValue = parseInt(quantityInput.value, 10);
-        const action = btn.dataset.action;
-
-        if (action === 'increase') {
-          currentValue++;
-        } else if (action === 'decrease' && currentValue > MIN_QUANTITY) {
-          currentValue--;
-        }
-
-        quantityInput.value = currentValue;
-        checkQuantity(currentValue);
-
-        const activePack = document.querySelector('.pack-card.active').dataset.pack;
-        if (activePack) {
-          updatePrice(activePack, currentValue);
-        }
-      });
-    });
-
-    quantityInput.addEventListener('change', () => {
-        let currentValue = parseInt(quantityInput.value, 10);
-        if (isNaN(currentValue) || currentValue < MIN_QUANTITY) {
-            currentValue = MIN_QUANTITY;
-            quantityInput.value = MIN_QUANTITY;
-        }
-        checkQuantity(currentValue);
-        const activePack = document.querySelector('.pack-card.active').dataset.pack;
-        if (activePack) {
-          updatePrice(activePack, currentValue);
-        }
-    });
-
     // Set initial state
     const initialPack = document.querySelector('.pack-card.active');
-    if (initialPack) {
-      selectPack(initialPack);
-    }
+    if (initialPack) selectPack(initialPack);
+    
   }
 
   // FAQ Accordion

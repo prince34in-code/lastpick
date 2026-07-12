@@ -252,11 +252,11 @@ select {
 
 .hero h1 {
   max-width: 10ch;
-  margin: 0 0 28px;
-  font-size: clamp(3.45rem, 7vw, 6.2rem);
+  margin: 0; /* Removed bottom margin as button is gone */
+  font-size: clamp(3rem, 7vw, 5.5rem); /* Restored font size for impact */
   font-weight: 800;
-  letter-spacing: 0;
-  line-height: 0.98;
+  letter-spacing: -0.02em; /* Tightened letter spacing */
+  line-height: 0.98; /* Adjusted for tighter feel */
   text-shadow: 0 8px 34px rgba(0, 0, 0, 0.36);
 }
 
@@ -327,19 +327,27 @@ select {
 }
 
 .product-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); /* Adjusted grid for better balance */
-  gap: var(--space-xxl); /* Reduced gap */
+  display: grid; /* This will be a single column grid by default */
+  gap: var(--space-lg);
   align-items: center;
+}
+
+/* Apply two-column layout only on larger screens */
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: var(--space-xxl);
+  }
 }
 
 .image-frame {
   display: grid;
-  min-height: clamp(360px, 45vw, 560px);
+  /* Reduced height by ~15-20% */
+  min-height: clamp(300px, 38vw, 460px);
   place-items: center;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--line); /* Unchanged */
+  border-radius: var(--radius-lg); /* Unchanged */
   background: linear-gradient(135deg, #fffdf7 0%, #f4ecd9 100%);
   box-shadow: var(--shadow-md);
 }
@@ -349,7 +357,7 @@ select {
   height: 100%;
   aspect-ratio: 1 / 1;
   object-fit: contain;
-  padding: clamp(24px, 5vw, 60px); /* Increased padding for more breathing room */
+  padding: clamp(20px, 4vw, 50px); /* Reduced padding to allow for larger bottle */
   transition: opacity var(--transition-base), transform var(--transition-base);
 
   filter: drop-shadow(0 20px 25px rgba(0,0,0,0.18));
@@ -358,11 +366,15 @@ select {
 .image-frame img[src$="bottle-200ml.webp"] {
   transform: scale(1.15);
 }
-
+.product-details-section .image-frame img {
+  transform: scale(1.2); /* Increased image size */
+  filter: drop-shadow(0 2px 24px rgba(167, 212, 111, 0.5)); /* Soft green glow */
+}
 /* New style for the premium homepage bottle */
 .product-highlight .image-frame img[src$="featured-bottle.webp"] {
-  transform: scale(1.05); /* Reduced scale for more whitespace and premium feel */
-  filter: 
+  /* Increased bottle size by ~14% (1.2 / 1.05) */
+  transform: scale(1.2);
+  filter:
     drop-shadow(0 2px 24px var(--leaf-green)) /* Subtle green glow */
     drop-shadow(0 28px 35px rgba(15, 91, 60, 0.22)); /* Softer, more natural shadow */
 }
@@ -370,7 +382,7 @@ select {
 .product-copy {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-lg); /* 24px */
   justify-content: center;
 }
 
@@ -378,7 +390,7 @@ select {
   color: var(--muted);
   line-height: 1.6;
   max-width: 55ch;
-  margin: calc(var(--space-sm) * -1) 0 0;
+  margin: calc(var(--space-xs) * -1) 0 0; /* Reduced negative margin */
 }
 
 .product-heading-link,
@@ -391,6 +403,13 @@ select {
   font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.24em;
+}
+
+/* Style for the moved featured product label */
+.product-grid > .section-label {
+  grid-column: 1 / -1; /* Span full width */
+  margin-bottom: 0; /* Adjusted to reduce gap */
+  justify-self: start;
 }
 
 .product-heading,
@@ -418,14 +437,31 @@ select {
 
 .price-wrapper {
   display: grid;
-  gap: 4px;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 0 var(--space-sm);
+  width: 100%;
 }
 
 .moq-badge, .moq-note {
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--muted);
+  grid-column: 1 / -1;
   line-height: 1;
+}
+.pack-savings-note {
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.price-unit {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 .price {
@@ -433,6 +469,24 @@ select {
   font-size: clamp(1.75rem, 3vw, 2.18rem);
   font-weight: 800;
   line-height: 1;
+}
+
+.price-label {
+  grid-column: 1 / -1;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.price-original {
+  align-self: end;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration-thickness: 1.5px;
 }
 
 .pack-selector {
@@ -482,15 +536,24 @@ select {
   text-align: center;
 }
 
-.pack-card:hover,
-.pack-card.active {
-  border-color: rgba(15, 91, 60, 0.34);
-  background: #fbfff2;
-  box-shadow: var(--shadow-md);
+.pack-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--deep-green);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
-.pack-card:hover {
-  transform: scale(1.03);
+
+.pack-badge.best-value {
+  background: var(--leaf-green);
 }
+
 .pack-card.active {
   outline: 2px solid rgba(167, 212, 111, 0.72);
   outline-offset: 2px;
@@ -505,12 +568,13 @@ select {
 
 .feature-item,
 .feature-card {
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .feature-item {
   display: flex;
   min-height: 64px;
+  height: 100%;
   align-items: center;
   gap: var(--space-md);
   background: rgba(15, 91, 60, 0.08);
@@ -535,7 +599,7 @@ select {
 /* ========================================================= */
 /* FAQ Accordion Section                                     */
 /* ========================================================= */
-.faq-accordion-section {
+.faq-accordion-section { /* Unchanged */
   padding: 80px var(--gutter);
   background: linear-gradient(180deg, #F8FCFF 0%, #F4F9F6 100%);
 }
@@ -574,7 +638,7 @@ select {
 .accordion-group {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md); /* 16px gap between items */
+  gap: 10px; /* Further reduced gap between cards */
   width: 100%;
 }
 
@@ -661,7 +725,7 @@ select {
 
 .accordion-content {
   padding: var(--space-lg);
-  margin-left: 52px; /* 36px (number) + 16px (gap) */
+  margin-left: 52px; /* 36px (number) + 16px (gap) */ /* Unchanged */
   background: rgba(15,91,60,.03);
   border-left: 4px solid var(--leaf-green);
   border-radius: 14px;
@@ -739,12 +803,13 @@ select {
   border: 1px solid var(--line);
   border-radius: 999px;
   overflow: hidden;
+  background: #fff;
 }
 
 .quantity-input input {
   width: 50px;
   border: 0;
-  text-align: center;
+  text-align: center;  font-weight: 700;
   background: transparent;
   -moz-appearance: textfield;
 }
@@ -758,10 +823,15 @@ select {
   height: 40px;
   border: 0;
   background: transparent;
-  color: var(--muted);
+  color: var(--dark-green);
   cursor: pointer;
   font-size: 1.2rem;
+  transition: background-color var(--transition-base);
 }
+.quantity-btn:hover:not(:disabled) {
+  background-color: #f0fdf4;
+}
+
 .quantity-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -770,8 +840,11 @@ select {
 
 .product-info-tabs {
   margin-top: var(--space-lg);
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-lg);
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-lg);
 }
 
 .info-item h4 {
@@ -781,12 +854,87 @@ select {
   color: var(--dark-green);
 }
 
-.info-item p, .nutrition-list {
+.info-item {
+  padding: var(--space-md);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+
+.info-item p,
+.nutrition-list {
   margin: 0;
   padding: 0;
   list-style: none;
   color: var(--muted);
   line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.price-subtitle {
+  grid-column: 1 / -1;
+  margin-top: -12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.price-details {
+  display: contents; /* Allows children to participate in the parent grid */
+}
+
+.price-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(167, 212, 111, 0.2);
+  color: var(--dark-green);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.trust-badges {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+  margin-top: var(--space-sm);
+}
+.trust-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.moq-badge-premium {
+  display: none; /* Hidden by default */
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 6px 12px;
+  border: 1px solid rgba(15, 91, 60, 0.1);
+  border-radius: 999px;
+  background-color: #EAF7E3;
+  color: var(--dark-green);
+  font-size: 13px;
+  font-weight: 700;
+  justify-self: start;
+}
+
+.moq-badge-premium.visible {
+  display: inline-flex;
+}
+
+.moq-badge-premium::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f5b3c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v2'%3E%3C/path%3E%3Cpath d='M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4'%3E%3C/path%3E%3Cpath d='M21 10l-7 4-7-4'%3E%3C/path%3E%3Cpath d='M12 22V14'%3E%3C/path%3E%3Cpath d='M7 12.5L12 15l5-2.5'%3E%3C/path%3E%3C/svg%3E");
+  background-size: contain;
 }
 
 #product-buy-wrapper {
@@ -799,9 +947,20 @@ select {
     transform: translateY(4px);
 }
 
+.button-secondary {
+  background: linear-gradient(180deg, var(--dark-green) 0%, var(--deep-green) 100%);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05), inset 0 1px 1px rgba(255,255,255,.1);
+}
+.button-secondary:hover {
+  background: linear-gradient(180deg, #146e44 0%, var(--deep-green) 100%);
+  box-shadow: 0 10px 20px -5px rgba(15, 91, 60, 0.3), inset 0 1px 1px rgba(255,255,255,.1);
+  transform: translateY(-2px);
+}
+
+
 .lifestyle-gallery {
   background: var(--cream);
-  padding-top: calc(var(--section-y) * 0.6); /* Reduced top padding by 40% */
+  padding-top: var(--space-xxl);
 }
 
 .gallery-heading {
@@ -936,12 +1095,13 @@ select {
   position: relative;
   display: flex;
   max-width: 420px;
+  width: 100%; /* Ensure form shrinks on smaller screens */
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
   border-radius: 999px;
 }
 
 .subscribe-form input {
-  flex-grow: 1;
+  flex-grow: 1; /* Unchanged */
   height: 48px;
   border: 1px solid transparent;
   border-radius: 999px;
@@ -988,7 +1148,7 @@ select {
 .mobile-footer-social {
   display: flex;
   justify-content: flex-start; 
-  gap: 12px;
+  gap: var(--space-sm);
 }
 
 .social-link-mobile {
@@ -1075,7 +1235,7 @@ select {
 .brand-tagline-mobile { margin: 2px 0 0; color: var(--leaf-green); font-size: 0.85rem; }
 .brand-contact { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .contact-row { display: flex; align-items: flex-start; gap: 10px; }
-.contact-icon-mobile { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 999px; background: #1B6A47; color: var(--leaf-green); flex-shrink: 0; }
+.contact-icon-mobile { display: grid; width: 26px; height: 26px; place-items: center; border-radius: 999px; background: #1B6A47; color: var(--leaf-green); flex-shrink: 0; }
 .contact-details { display: grid; gap: 2px; }
 .contact-label { font-size: 0.9rem; font-weight: 600; color: var(--warm-cream); }
 .contact-value {
@@ -1083,6 +1243,7 @@ select {
   font-weight: 500;
   color: rgba(248, 243, 231, 0.7);
   line-height: 1.5;
+  overflow-wrap: break-word; /* Ensure long text like emails wraps correctly */
   transition: color 0.3s ease, transform 0.3s ease;
 }
 .contact-value:hover {
@@ -1368,9 +1529,9 @@ button:focus-visible,
 
   .hero h1 {
     max-width: 8ch;
-    margin: 0 0 24px;
-    font-size: clamp(1.6rem, 7.2vw, 2.1rem); /* Reduced font size by ~5% */
-    line-height: 1.02;
+    margin: 0; /* Removed bottom margin */
+    font-size: clamp(2.5rem, 10vw, 3rem); /* Approx 40px on mobile */
+    line-height: 1.0; /* Adjusted for tighter feel */
   }
 
   .site-header .brand {
@@ -1385,12 +1546,13 @@ button:focus-visible,
   .button {
     padding: 12px 22px;
   }
-
+  
   .product-highlight,
-  .why-section,
+  .faq-accordion-section,
   .lifestyle-gallery {
-    padding-top: 28px;
-    padding-bottom: 28px;
+    /* Standardized mobile section spacing */
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
 
   .product-grid {
@@ -1398,16 +1560,22 @@ button:focus-visible,
   }
 
   .image-frame {
-    min-height: 240px;
+    min-height: 260px; /* Slightly increased for better balance */
     border-radius: 20px;
   }
 
   .image-frame img {
-    max-height: 240px;
+    padding: 20px;
+  }
+
+  /* Increase featured bottle size on mobile */
+  .product-highlight .image-frame img[src$="featured-bottle.webp"] {
+    transform: scale(1.0); /* Reduced image size by ~13% for better balance */
   }
 
   .product-copy {
-    gap: var(--space-lg);
+    /* Reduced gap between product text elements */
+    gap: 20px;
   }
 
   .product-heading {
@@ -1416,19 +1584,31 @@ button:focus-visible,
   }
 
   .product-buy {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    width: 100%;
-    align-items: stretch;
-    gap: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+  
+  .product-buy .price-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .product-buy .button {
     width: 100%;
+    max-width: 420px;
+    height: 52px;
   }
 
   .price {
     align-self: center;
+  }
+
+  .price-wrapper {
+    gap: 0 6px;
   }
 
   .pack-cards {
@@ -1512,21 +1692,17 @@ button:focus-visible,
     line-height: 1.28;
   }
 
-  .faq-accordion-section {
-    padding: var(--section-y) var(--gutter);
-  }
-
   .faq-accordion-header h2 {
     font-size: 34px;
   }
 
   .accordion-trigger {
     min-height: 60px;
-    padding: 12px 0;
+    padding: 12px 0; /* Unchanged */
   }
 
   .accordion-title {
-    font-size: 18px;
+    font-size: 1rem; /* Standardized font size */
     gap: var(--space-md);
   }
 
@@ -1534,7 +1710,7 @@ button:focus-visible,
     font-size: 14px;
   }
   .accordion-content p {
-    font-size: 16px;
+    font-size: 0.95rem;
   }
 
 }
@@ -1553,37 +1729,46 @@ button:focus-visible,
 
 @media (max-width: 767px) {
   .faq-accordion-section {
-    padding: 60px var(--gutter);
-  }
-
-  .faq-accordion-header h2 {
     font-size: 36px;
-  }
+    margin-bottom: 14px;  } /* Reduced gap below heading */
 
   .accordion-trigger {
-    min-height: 68px;
+    min-height: 58px; /* Reduced card height by ~10% */
+    padding: 8px var(--space-md); /* Reduced vertical padding */
   }
 
   .accordion-icon {
-    width: 22px;
-    height: 22px;
+    /* Reduced accordion arrow size on mobile */
+    width: 10px;
+    height: 10px;
   }
 
   .accordion-content p {
-    font-size: 15px;
+    font-size: 1rem;
     line-height: 1.75;
   }
 
   .subscribe-form input {
-    height: 44px; /* Made slightly shorter */
-    padding: 0 48px 0 18px; /* Adjusted padding for new size */
+    height: 52px; /* Standardized height */
+    padding: 0 52px 0 18px; /* Adjusted padding for new button size */
   }
+
   .subscribe-form button {
-    width: 36px; /* Made slightly smaller */
-    height: 36px; /* Made slightly smaller */
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    width: 44px;
+    height: 44px;
   }
+  .subscribe-form button svg {
+    width: 20px;
+  }
+
   .mobile-footer-social {
-    gap: var(--space-sm); /* Further tightened spacing */
+    /* Footer internal spacing */
+    gap: var(--space-sm);
+    margin-top: 0;
+    margin-bottom: 0;
   }
   .social-link-mobile {
     width: 38px; /* Reduced icon size */
@@ -1594,7 +1779,8 @@ button:focus-visible,
     height: 20px;
   }
   .mobile-footer-divider {
-    margin: -4px 0; /* Reduced divider spacing */
+    /* Footer internal spacing */
+    margin: var(--space-md) 0;
   }
   .divider-icon svg {
     width: 18px; /* Refined: Smaller icon */
@@ -1608,15 +1794,24 @@ button:focus-visible,
     font-size: 0.65rem; /* Refined: Reduced size */
   }
   .mobile-footer-brand-section {
-    gap: 10px; /* Made more compact */
+    gap: var(--space-md);
+  }
+  .mobile-footer-bottom {
+    /* Footer internal spacing */
+    margin-top: calc(var(--space-sm) * -1);
   }
   .policy-shell .site-header {
     padding: 20px var(--gutter) 10px;
   }
 }
 
-@media (max-width: 680px) {
-  /* Mobile-specific overrides for screens smaller than 681px can go here */
+@media (max-width: 680px) { /* Mobile-specific overrides */
+  .gallery-heading {
+    margin-bottom: 20px;
+  }
+  .mobile-footer-wrapper {
+    gap: 24px; /* Standardized gap */
+  }
 }
 
 @media (max-width: 430px) {
@@ -1662,4 +1857,73 @@ button:focus-visible,
 }
 .faq-accordion-section{
   scroll-margin-top: 80px;
+}
+
+/* ========================================================= */
+/* iPhone SE / 320px Specific Optimizations                  */
+/* ========================================================= */
+@media (max-width: 320px) {
+  /* --- Global Spacing --- */
+  .product-highlight,
+  .faq-accordion-section,
+  .lifestyle-gallery {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  /* --- Hero Section --- */
+  .hero-content {
+    padding-top: 95px;
+  }
+  .hero h1 {
+    font-size: 1.45rem; /* ~5% reduction */
+  }
+
+  /* --- Featured Product --- */
+  .product-highlight .image-frame img[src$="featured-bottle.webp"] {
+    transform: scale(1.05); /* ~8% reduction */
+  }
+  .product-grid {
+    gap: var(--space-md);
+  }
+  .product-copy {
+    gap: var(--space-md);
+  }
+
+  /* --- FAQ Section --- */
+  .accordion-group {
+    gap: 8px;
+  }
+  .accordion-trigger {
+    min-height: 54px; /* ~8% reduction */
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+  .faq-accordion-header h2 {
+    margin-bottom: 12px;
+  }
+
+  /* --- Lifestyle Section --- */
+  .gallery-heading {
+    margin-bottom: 16px;
+  }
+
+  /* --- Footer & Newsletter --- */
+  .mobile-footer-wrapper {
+    gap: 20px;
+  }
+  .subscribe-form input {
+    height: 46px;
+    padding-right: 46px;
+  }
+  .subscribe-form button {
+    width: 38px;
+    height: 38px;
+  }
+  .brand-contact {
+    gap: 10px;
+  }
+  .mobile-footer-links-grid {
+    gap: var(--space-md);
+  }
 }

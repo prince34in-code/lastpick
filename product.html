@@ -110,15 +110,21 @@
             </div>
 
             <div class="pack-selector">
-              <h3 class="pack-heading" id="pack-heading">Select Pack Size</h3>
+              <h3 class="pack-heading" id="pack-heading" aria-live="polite">Select Pack Size</h3>
               <div class="pack-cards" role="radiogroup" aria-labelledby="pack-heading">
+                <button class="pack-card" data-pack="1pack" aria-checked="false" role="radio" type="button">
+                  <img src="assets/images/products/bottle-200ml.webp" alt="A single bottle of LastPick Coconut Water." width="96" height="96" loading="lazy" decoding="async" />
+                  <span class="pack-label">Single Bottle</span>
+                </button>
                 <button class="pack-card active" data-pack="6pack" aria-checked="true" role="radio" type="button">
                   <img src="assets/images/products/pack-6.webp" alt="A 6-pack of LastPick Coconut Water." width="96" height="96" loading="lazy" decoding="async" />
                   <span class="pack-label">6 Bottle Pack</span>
+                  <span class="pack-badge">Most Popular</span>
                 </button>
                 <button class="pack-card" data-pack="12pack" aria-checked="false" role="radio" type="button">
                   <img src="assets/images/products/pack-12.webp" alt="A 12-pack of LastPick Coconut Water." width="96" height="96" loading="lazy" decoding="async" />
                   <span class="pack-label">12 Bottle Pack</span>
+                  <span class="pack-badge best-value">Best Value</span>
                 </button>
               </div>
             </div>
@@ -134,7 +140,16 @@
               </div>
               <div class="product-buy" id="product-buy-wrapper">
                 <span class="price">&#8377;240</span>
-                <a class="button button-secondary" id="buy-now-btn" href="https://wa.me/919310997076?text=Hello%20I%20would%20like%20to%20buy%20LastPick%20Coconut%20Water" target="_blank" rel="noopener noreferrer">Buy Now</a>
+                <div class="price-details">
+                  <span class="price-subtitle"></span>
+                  <p class="price-note"></p>
+                </div>
+                <div class="trust-badges">
+                  <span class="trust-badge">✓ 100% Natural</span>
+                  <span class="trust-badge">✓ Secure Checkout</span>
+                </div>
+                <div class="moq-badge-premium"></div>
+                <a class="button button-secondary" id="buy-now-btn" href="https://wa.me/919310997076?text=Hello%20I%20would%20like%20to%20buy%20LastPick%20Coconut%20Water" target="_blank" rel="noopener noreferrer">Shop Now</a>
               </div>
             </div>
 
