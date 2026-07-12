@@ -14,6 +14,7 @@
   /* Layout */
   --container: 1280px;
   --gutter: clamp(1rem, 4vw, 2.5rem); /* 16px -> 40px */
+  --header-height: 72px; /* Default header height for calculations */
   --section-y: clamp(3rem, 6vw, 5rem); /* 48px -> 80px */
 
   /* Spacing Scale */
@@ -221,7 +222,7 @@ select {
 .hero-content {
   align-self: center;
   width: min(220px, calc(100% - (var(--gutter) * 2)));
-  margin-left: clamp(24px, 7vw, 122px);
+  margin-left: clamp(24px, 7vw, 122px);  
   padding-top: 58px;
   color: var(--warm-cream);
   opacity: 0;
@@ -252,11 +253,11 @@ select {
 
 .hero h1 {
   max-width: 10ch;
-  margin: 0; /* Removed bottom margin as button is gone */
-  font-size: clamp(3rem, 7vw, 5.5rem); /* Restored font size for impact */
+  margin: 0 0 28px;
+  font-size: clamp(3.45rem, 7vw, 6.2rem);
   font-weight: 800;
-  letter-spacing: -0.02em; /* Tightened letter spacing */
-  line-height: 0.98; /* Adjusted for tighter feel */
+  letter-spacing: 0;
+  line-height: 0.98;
   text-shadow: 0 8px 34px rgba(0, 0, 0, 0.36);
 }
 
@@ -366,10 +367,7 @@ select {
 .image-frame img[src$="bottle-200ml.webp"] {
   transform: scale(1.15);
 }
-.product-details-section .image-frame img {
-  transform: scale(1.2); /* Increased image size */
-  filter: drop-shadow(0 2px 24px rgba(167, 212, 111, 0.5)); /* Soft green glow */
-}
+
 /* New style for the premium homepage bottle */
 .product-highlight .image-frame img[src$="featured-bottle.webp"] {
   /* Increased bottle size by ~14% (1.2 / 1.05) */
@@ -536,24 +534,6 @@ select {
   text-align: center;
 }
 
-.pack-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: var(--gold);
-  color: var(--deep-green);
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.pack-badge.best-value {
-  background: var(--leaf-green);
-}
-
 .pack-card.active {
   outline: 2px solid rgba(167, 212, 111, 0.72);
   outline-offset: 2px;
@@ -568,13 +548,12 @@ select {
 
 .feature-item,
 .feature-card {
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 
 .feature-item {
   display: flex;
   min-height: 64px;
-  height: 100%;
   align-items: center;
   gap: var(--space-md);
   background: rgba(15, 91, 60, 0.08);
@@ -740,7 +719,7 @@ select {
 }
 
 .product-details-section {
-  padding: var(--section-y) var(--gutter);
+  padding: calc(var(--header-height) + var(--space-lg)) var(--gutter) var(--section-y);
 }
 
 .product-header {
@@ -784,6 +763,10 @@ select {
   gap: var(--space-lg);
 }
 
+.purchase-controls {
+  margin-top: var(--space-lg);
+}
+
 .quantity-selector {
   display: grid;
   gap: var(--space-sm);
@@ -803,13 +786,12 @@ select {
   border: 1px solid var(--line);
   border-radius: 999px;
   overflow: hidden;
-  background: #fff;
 }
 
 .quantity-input input {
   width: 50px;
   border: 0;
-  text-align: center;  font-weight: 700;
+  text-align: center;
   background: transparent;
   -moz-appearance: textfield;
 }
@@ -823,15 +805,10 @@ select {
   height: 40px;
   border: 0;
   background: transparent;
-  color: var(--dark-green);
+  color: var(--muted);
   cursor: pointer;
   font-size: 1.2rem;
-  transition: background-color var(--transition-base);
 }
-.quantity-btn:hover:not(:disabled) {
-  background-color: #f0fdf4;
-}
-
 .quantity-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -840,11 +817,8 @@ select {
 
 .product-info-tabs {
   margin-top: var(--space-lg);
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--space-lg);
-  border-top: 1px solid var(--line);
-  padding-top: var(--space-lg);
 }
 
 .info-item h4 {
@@ -854,21 +828,12 @@ select {
   color: var(--dark-green);
 }
 
-.info-item {
-  padding: var(--space-md);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: #fff;
-}
-
-.info-item p,
-.nutrition-list {
+.info-item p, .nutrition-list {
   margin: 0;
   padding: 0;
   list-style: none;
   color: var(--muted);
   line-height: 1.6;
-  font-size: 0.9rem;
 }
 
 .price-subtitle {
@@ -877,10 +842,6 @@ select {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--muted);
-}
-
-.price-details {
-  display: contents; /* Allows children to participate in the parent grid */
 }
 
 .price-note {
@@ -893,20 +854,6 @@ select {
   font-size: 0.75rem;
   font-weight: 700;
   text-align: center;
-}
-
-.trust-badges {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm) var(--space-md);
-  margin-top: var(--space-sm);
-}
-.trust-badge {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--muted);
-  white-space: nowrap;
 }
 
 .moq-badge-premium {
@@ -946,17 +893,6 @@ select {
   pointer-events: none;
     transform: translateY(4px);
 }
-
-.button-secondary {
-  background: linear-gradient(180deg, var(--dark-green) 0%, var(--deep-green) 100%);
-  box-shadow: 0 1px 2px rgba(0,0,0,.05), inset 0 1px 1px rgba(255,255,255,.1);
-}
-.button-secondary:hover {
-  background: linear-gradient(180deg, #146e44 0%, var(--deep-green) 100%);
-  box-shadow: 0 10px 20px -5px rgba(15, 91, 60, 0.3), inset 0 1px 1px rgba(255,255,255,.1);
-  transform: translateY(-2px);
-}
-
 
 .lifestyle-gallery {
   background: var(--cream);
@@ -1452,6 +1388,7 @@ button:focus-visible,
 
 @media (max-width: 680px) {
   .site-header {
+    --header-height: 68px;
     justify-content: center;
     padding: 16px 18px;
   }
@@ -1516,7 +1453,7 @@ button:focus-visible,
     align-self: start;
     width: min(180px, calc(100% - 110px)); /* Reduced width to constrain text */
     margin: 0 auto 0 20px;
-    padding-top: 88px;
+    padding-top: calc(var(--header-height) + 20px); /* Dynamic padding */
     text-align: left;
   }
 
@@ -1529,9 +1466,9 @@ button:focus-visible,
 
   .hero h1 {
     max-width: 8ch;
-    margin: 0; /* Removed bottom margin */
+    margin: 0;
     font-size: clamp(2.5rem, 10vw, 3rem); /* Approx 40px on mobile */
-    line-height: 1.0; /* Adjusted for tighter feel */
+    line-height: 1.02;
   }
 
   .site-header .brand {
@@ -1551,8 +1488,8 @@ button:focus-visible,
   .faq-accordion-section,
   .lifestyle-gallery {
     /* Standardized mobile section spacing */
-    padding-top: 24px;
-    padding-bottom: 24px;
+    padding-top: 48px;
+    padding-bottom: 48px;
   }
 
   .product-grid {
@@ -1570,7 +1507,7 @@ button:focus-visible,
 
   /* Increase featured bottle size on mobile */
   .product-highlight .image-frame img[src$="featured-bottle.webp"] {
-    transform: scale(1.0); /* Reduced image size by ~13% for better balance */
+    transform: scale(1.15); /* Slightly reduced for better composition */
   }
 
   .product-copy {
@@ -1584,23 +1521,20 @@ button:focus-visible,
   }
 
   .product-buy {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-lg);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    width: 100%;
+    align-items: stretch;
+    gap: var(--space-md);
   }
   
   .product-buy .price-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
   }
 
   .product-buy .button {
     width: 100%;
-    max-width: 420px;
-    height: 52px;
   }
 
   .price {
@@ -1616,9 +1550,9 @@ button:focus-visible,
   }
 
   .pack-card {
-    height: 112px;
+    height: 100px;
     min-height: 0;
-    padding: 10px 6px;
+    padding: 8px 6px;
   }
 
   .pack-card img {
@@ -1634,7 +1568,7 @@ button:focus-visible,
 
   .feature-item,
   .feature-card {
-    min-height: 60px;
+    min-height: 56px;
     border-radius: 14px;
     padding: 10px;
     font-size: 0.88rem;
@@ -1749,19 +1683,19 @@ button:focus-visible,
   }
 
   .subscribe-form input {
-    height: 52px; /* Standardized height */
-    padding: 0 52px 0 18px; /* Adjusted padding for new button size */
+    height: 46px; /* Reduced height */
+    padding: 0 48px 0 18px; /* Adjusted padding for new button size */
   }
 
   .subscribe-form button {
     top: 4px;
     right: 4px;
     bottom: 4px;
-    width: 44px;
-    height: 44px;
+    width: 38px;
+    height: 38px;
   }
   .subscribe-form button svg {
-    width: 20px;
+    width: 18px;
   }
 
   .mobile-footer-social {
@@ -1825,8 +1759,8 @@ button:focus-visible,
 
   .hero-content {
     width: min(165px, calc(100% - 100px)); /* Further reduced width */
-    margin-left: 16px;
-    padding-top: 105px;
+    margin-left: 16px;    
+    padding-top: calc(var(--header-height) + 30px);
   }
 
   .eyebrow {

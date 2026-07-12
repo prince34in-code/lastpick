@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const priceSubtitle = document.querySelector('.price-subtitle');
     const priceNote = document.querySelector('.price-note');
     const trustBadges = document.querySelector('.trust-badges');
+    const productBadge = document.querySelector('.product-page-badge');
     const moqBadge = document.querySelector('.moq-badge-premium');
 
     const packData = {
@@ -125,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         price: 240,
         src: 'assets/images/products/pack-6.webp',
         subtitle: '₹40 per bottle',
-        note: 'Most Popular',
+        badgeText: 'Best Seller',
         ctaText: 'Buy Now',
         label: '6 Bottle Pack',
         purchasable: true,
@@ -135,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         price: 480,
         src: 'assets/images/products/pack-12.webp',
         subtitle: '₹40 per bottle',
-        note: 'Best Value',
+        badgeText: 'Best Value',
         ctaText: 'Buy Now',
         label: '12 Bottle Pack',
         purchasable: true,
@@ -180,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
       updatePrice(pack);
 
       // Animate text changes
-      const textElements = [priceEl, priceSubtitle, priceNote, moqBadge];
+      const textElements = [priceEl, priceSubtitle, priceNote, moqBadge, productBadge];
       textElements.forEach(el => el && (el.style.opacity = '0'));
 
       setTimeout(() => {
@@ -190,6 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (moqBadge) {
           moqBadge.textContent = data.moqText || '';
           moqBadge.classList.toggle('visible', !!data.moqText);
+        }
+
+        if (productBadge) {
+          productBadge.textContent = data.badgeText || '';
+          productBadge.style.opacity = data.badgeText ? '1' : '0';
+          productBadge.style.transform = data.badgeText ? 'scale(1)' : 'scale(0.9)';
         }
 
         textElements.forEach(el => el && (el.style.opacity = '1'));
