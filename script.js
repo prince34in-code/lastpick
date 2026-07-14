@@ -21,6 +21,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const prefersReducedMotion = () => reducedMotionQuery.matches;
 
+  const enableMotionAfterFirstPaint = () => {
+    if (prefersReducedMotion()) return;
+
+    const enableMotion = () => {
+      document.documentElement.classList.add('motion-ready');
+    };
+
+    if ('requestAnimationFrame' in window) {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(enableMotion);
+      });
+      return;
+    }
+
+    window.setTimeout(enableMotion, 0);
+  };
+
+  const isInViewport = (element) => {
+    const bounds = element.getBoundingClientRect();
+    return bounds.bottom > 0 && bounds.top < window.innerHeight;
+  };
+
   const revealObserver = ('IntersectionObserver' in window && !prefersReducedMotion())
     ? new IntersectionObserver(
       (entries, obs) => {
@@ -39,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!element || element.dataset.motionObserved === 'true') return;
     element.dataset.motionObserved = 'true';
 
-    if (!revealObserver) {
+    if (!revealObserver || isInViewport(element)) {
       element.classList.add('visible');
       return;
     }
@@ -179,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
   prepareAnimations();
   initHeroMotion();
   initRipples();
+  enableMotionAfterFirstPaint();
 
   // --- Utilities ---
   const debounce = (func, wait) => {
