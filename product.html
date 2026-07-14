@@ -98,7 +98,7 @@
 
     <main id="main-content">
       <section class="product-details-section">
-        <div class="product-grid">
+        <div class="product-grid" data-animate>
           <div class="product-image">
             <div class="image-frame">
               <span class="product-page-badge"></span>
@@ -107,11 +107,13 @@
           </div>
           <div class="product-copy">
             <div class="product-header">
-              <h1 class="product-heading">100% Pure Coconut Water</h1>
+              <span class="section-label">Featured Product</span>
+              <span class="product-eyebrow">100% Pure</span>
+              <h1 class="product-heading">Coconut Water</h1>
             </div>
 
             <div class="pack-selector">
-              <h3 class="pack-heading" id="pack-heading" aria-live="polite">Select Pack Size</h3>
+              <h3 class="pack-heading" id="pack-heading" aria-live="polite">Choose Your Pack</h3>
               <div class="pack-cards" role="radiogroup" aria-labelledby="pack-heading">
                 <button class="pack-card" data-pack="1pack" aria-checked="false" role="radio" type="button">
                   <img src="assets/images/products/bottle-200ml.webp" alt="A single bottle of LastPick Coconut Water." width="96" height="96" loading="lazy" decoding="async" />
@@ -144,8 +146,7 @@
                   <p class="price-note"></p>
                 </div>
                 <div class="trust-badges">
-                  <span class="trust-badge">✓ 100% Natural</span>
-                  <span class="trust-badge">✓ Secure Checkout</span>
+                  <span class="trust-badge">&check; Secure Checkout</span>
                 </div>
                 <div class="moq-badge-premium"></div>
                 <a class="button button-secondary" id="buy-now-btn" href="https://wa.me/919310997076?text=Hello%20I%20would%20like%20to%20buy%20LastPick%20Coconut%20Water" target="_blank" rel="noopener noreferrer">Shop Now</a>
@@ -161,15 +162,15 @@
               </div>
               <div class="info-item">
                 <h4>Ingredients</h4>
-                <p>100% Tender Coconut Water.</p>
+                <p>100% Tender Coconut Water</p>
               </div>
               <div class="info-item">
                 <h4>Nutrition Facts (per 100ml)</h4>
                 <ul class="nutrition-list">
-                  <li><strong>Energy:</strong> 21 kcal</li>
-                  <li><strong>Potassium:</strong> 290 mg</li>
-                  <li><strong>Carbohydrates:</strong> 5.2 g</li>
-                  <li><strong>Natural Sugars:</strong> 4.8 g</li>
+                  <li><span>Energy</span><span>21 kcal</span></li>
+                  <li><span>Potassium</span><span>290 mg</span></li>
+                  <li><span>Carbohydrates</span><span>5.2 g</span></li>
+                  <li><span>Natural Sugar</span><span>4.8 g</span></li>
                 </ul>
               </div>
             </div>

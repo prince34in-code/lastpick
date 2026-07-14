@@ -9,16 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) throw new Error(`Could not fetch ${filePath}`);
       const content = await response.text();
       element.innerHTML = content;
+      return element;
     } catch (error) {
       console.error('Error loading component:', error);
       element.innerHTML = `<p style="color: red; text-align: center;">Error loading footer.</p>`;
+      return element;
     }
   };
 
   // --- Animations ---
-  const animatedElements = document.querySelectorAll('[data-animate]');
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(
+  const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = () => reducedMotionQuery.matches;
+
+  const revealObserver = ('IntersectionObserver' in window && !prefersReducedMotion())
+    ? new IntersectionObserver(
       (entries, obs) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -27,12 +31,154 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       },
-      { threshold: 0.15 }
-    );
-    animatedElements.forEach((el) => observer.observe(el));
-  } else {
-    animatedElements.forEach((el) => el.classList.add('visible'));
-  }
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.12 }
+    )
+    : null;
+
+  const observeReveal = (element) => {
+    if (!element || element.dataset.motionObserved === 'true') return;
+    element.dataset.motionObserved = 'true';
+
+    if (!revealObserver) {
+      element.classList.add('visible');
+      return;
+    }
+
+    revealObserver.observe(element);
+  };
+
+  const setStagger = (items) => {
+    Array.from(items).forEach((item, index) => {
+      item.style.setProperty('--stagger-index', index);
+    });
+  };
+
+  const prepareAnimations = (root = document) => {
+    root.querySelectorAll('.product-details-section .product-grid, .mobile-footer-wrapper').forEach((element) => {
+      element.setAttribute('data-animate', '');
+    });
+
+    [
+      '.product-highlight .section-label, .product-highlight .product-image, .product-highlight .product-eyebrow, .product-highlight .product-heading-link, .product-highlight .product-tagline, .product-highlight .price-wrapper, .product-highlight .button',
+      '.product-details-section .product-header > *, .product-details-section .pack-selector, .product-details-section .purchase-controls, .product-details-section .price, .product-details-section .product-info-tabs > *',
+      '.product-icons .feature-item',
+      '.accordion-item',
+      '.gallery-card',
+      '.mobile-footer-section, .mobile-footer-row, .mobile-footer-divider, .mobile-footer-brand-section, .mobile-footer-bottom',
+      '.mobile-footer-social .social-link-mobile'
+    ].forEach((selector) => setStagger(root.querySelectorAll(selector)));
+
+    root.querySelectorAll('[data-animate]').forEach(observeReveal);
+  };
+
+  const wrapHeroWords = () => {
+    const heroHeading = document.querySelector('.hero h1');
+    if (!heroHeading || heroHeading.dataset.motionText === 'true') return;
+
+    const words = heroHeading.textContent.trim().split(/\s+/);
+    heroHeading.textContent = '';
+
+    words.forEach((word, index) => {
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'hero-word';
+      wordSpan.textContent = word;
+      wordSpan.style.setProperty('--stagger-index', index);
+      heroHeading.appendChild(wordSpan);
+
+      if (index < words.length - 1) {
+        heroHeading.appendChild(document.createTextNode(' '));
+      }
+    });
+
+    heroHeading.dataset.motionText = 'true';
+  };
+
+  const initHeroMotion = () => {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+
+    wrapHeroWords();
+
+    if (prefersReducedMotion()) return;
+
+    window.setTimeout(() => {
+      hero.classList.add('hero-floating');
+    }, 900);
+
+    let pointerFrame = 0;
+    const canUsePointerParallax = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    if (canUsePointerParallax) {
+      hero.addEventListener('pointermove', (event) => {
+        if (pointerFrame) return;
+
+        pointerFrame = window.requestAnimationFrame(() => {
+          const bounds = hero.getBoundingClientRect();
+          const offsetX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 14;
+          const offsetY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 10;
+          hero.style.setProperty('--hero-pointer-x', `${offsetX.toFixed(2)}px`);
+          hero.style.setProperty('--hero-pointer-y', `${offsetY.toFixed(2)}px`);
+          pointerFrame = 0;
+        });
+      }, { passive: true });
+
+      hero.addEventListener('pointerleave', () => {
+        hero.style.setProperty('--hero-pointer-x', '0px');
+        hero.style.setProperty('--hero-pointer-y', '0px');
+      });
+    }
+
+    let scrollFrame = 0;
+    const updateHeroParallax = () => {
+      const bounds = hero.getBoundingClientRect();
+      if (bounds.bottom >= 0 && bounds.top <= window.innerHeight) {
+        const progress = (window.innerHeight - bounds.top) / (window.innerHeight + bounds.height);
+        const clamped = Math.max(0, Math.min(1, progress));
+        hero.style.setProperty('--hero-parallax-y', `${((clamped - 0.5) * 22).toFixed(2)}px`);
+      }
+      scrollFrame = 0;
+    };
+
+    const requestHeroParallax = () => {
+      if (!scrollFrame) {
+        scrollFrame = window.requestAnimationFrame(updateHeroParallax);
+      }
+    };
+
+    requestHeroParallax();
+    window.addEventListener('scroll', requestHeroParallax, { passive: true });
+    window.addEventListener('resize', requestHeroParallax);
+  };
+
+  const addRipple = (event) => {
+    if (prefersReducedMotion()) return;
+
+    const target = event.currentTarget;
+    const bounds = target.getBoundingClientRect();
+    const size = Math.max(bounds.width, bounds.height);
+    const ripple = document.createElement('span');
+
+    ripple.className = 'tap-ripple';
+    ripple.style.width = `${size}px`;
+    ripple.style.height = `${size}px`;
+    ripple.style.left = `${event.clientX - bounds.left - size / 2}px`;
+    ripple.style.top = `${event.clientY - bounds.top - size / 2}px`;
+
+    target.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+  };
+
+  const initRipples = (root = document) => {
+    root.querySelectorAll('.button, .subscribe-form button').forEach((button) => {
+      if (button.dataset.rippleReady === 'true') return;
+      button.dataset.rippleReady = 'true';
+      button.addEventListener('pointerdown', addRipple);
+    });
+  };
+
+  prepareAnimations();
+  initHeroMotion();
+  initRipples();
 
   // --- Utilities ---
   const debounce = (func, wait) => {
@@ -115,8 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
         price: 40,
         src: 'assets/images/products/bottle-200ml.webp',
         subtitle: 'Per Bottle',
-        note: 'Price Reference',
-        moqText: 'Minimum Order: 6 Bottles (MOQ)',
+        note: '',
+        moqText: '',
         ctaText: 'Shop Now',
         label: 'Single Bottle',
         purchasable: true, // Button is enabled but links to product page
@@ -125,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '6pack': {
         price: 240,
         src: 'assets/images/products/pack-6.webp',
-        subtitle: '₹40 per bottle',
+        subtitle: '\u20B940 per bottle',
         badgeText: 'Best Seller',
         ctaText: 'Buy Now',
         label: '6 Bottle Pack',
@@ -135,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '12pack': {
         price: 480,
         src: 'assets/images/products/pack-12.webp',
-        subtitle: '₹40 per bottle',
+        subtitle: '\u20B940 per bottle',
         badgeText: 'Best Value',
         ctaText: 'Buy Now',
         label: '12 Bottle Pack',
@@ -210,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Announce the change for screen readers
       if (packHeading) {
-        packHeading.textContent = `Selected: ${data.label}`;
+        packHeading.textContent = 'Choose Your Pack';
       }
     };
 
@@ -300,11 +446,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Footer ---
-  const yearSpan = document.getElementById('current-year');
-  if (yearSpan) {
-    yearSpan.textContent = new Date().getFullYear();
-  }
+  const setCurrentYear = (root = document) => {
+    const yearSpan = root.querySelector('#current-year');
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
+  };
+
+  setCurrentYear();
 
   // Load footer content last
-  loadComponent('.site-footer', 'footer.html');
+  loadComponent('.site-footer', 'footer.html').then((footer) => {
+    if (!footer) return;
+    setCurrentYear(footer);
+    prepareAnimations(footer);
+    initRipples(footer);
+  });
 });
